@@ -1,68 +1,233 @@
-## About Software Development @ Cyberhawk
+Wind Turbine Project Specification
+==================================
 
-## The task
-We've designed this task to try and give you the ability to show us what you can do and hopefully flex your technical and creative muscles. You can't show off too much here, show us you at your best and wow us!
+Project Overview
+----------------
 
-To make things as simple as we could, we've opted to use [Laravel Sail](https://laravel.com/docs/8.x/sail) to provide a quick and convenient development environment, this will require you to install
-[Docker Desktop](https://www.docker.com/products/docker-desktop) before you can start the test. We've provided [some more detailed instructions](#setting-everything-up) below in case this is your first time using Docker or Sail.
+The Wind Turbine Dashboard is a web application designed to visualize the status and details of wind turbines located within different wind farms. The application provides functionality to:
 
-We'd like you to build an application that will display an example wind farm, its turbines and their components.
-We'd like to be able to see components and their grades (measurement of damage/wear) ranging between 1 - 5.
+-   Display a list of wind farms.
 
-For example, a turbine could contain the following components:
-- Blade
-- Rotor
-- Hub
-- Generator
+-   View details of turbines in a selected wind farm.
 
-Don't worry about using real names for components or accurate looking data, we're more interested in how you structure the application and how you present the data.
+-   Display turbine components and their condition, along with inspection data.
 
-Don't be afraid of submitting incomplete code or code that isn't quite doing what you would like, just like your maths teacher, we like to see your working.
-Just Document what you had hoped to achieve and your thoughts behind any unfinished code, so that we know what your plan was.
+The project is designed with a modern, responsive interface using React.js, Tailwind CSS, and Leaflet for map functionality.
 
-### Requirements
-- Display a list of turbine inspections
-- Each Turbine should have a number of components
-- A component can be given a grade from 1 to 5 (1 being perfect and 5 being completely broken/missing)
-- Use Laravel Models to represent the Entities in the task.
+* * * * *
 
-### Bonus Points
-- Great UX/UI
-- Use of React JS
-- Use of Tailwind CSS
-- Use of 3D
-- Use of a web map technology in the display of the data
-- Automated tests
-- API Authentication
-- Use of coding style guidelines (we use PSR-12 and AirBnb)
-- Use of git with clear logical commits
-- Specs/Plans/Designs
+Functional Requirements
+-----------------------
 
-### Submitting The Task
-Ideally you will fork this repo, work on it then email us with details of where to access it.
-Alternatively you can download locally and email us a zip of your completed work.
+### 1\. Wind Farm List:
 
-## Setting Everything Up
-As mentioned above we have chosen to make use of Laravel Sail as the foundation of this technical test.
-- If you haven't already, you will need to install [Docker Desktop](https://www.docker.com/products/docker-desktop).
-- One that is installed your next step is to install this projects composer dependencies (including Sail).
-    - This will require either PHP 8 installed on your local machine or the use of [a small docker container](https://laravel.com/docs/8.x/sail#installing-composer-dependencies-for-existing-projects) that runs PHP 8 that can install the dependencies for us.
-- If you haven't done so already copy the `.env.example` file to `.env`
-    - If you are running a local development environment you may need to change some default ports in the `.env` file
-        - We've already changed mysql to 33060 and NGINX to 81 for you
-- It should now be time to [start Sail](https://laravel.com/docs/8.x/sail#starting-and-stopping-sail) and the task
+-   Display a list of available wind farms on the sidebar.
 
-### Installing Composer Dependencies
-https://laravel.com/docs/9.x/sail#installing-composer-dependencies-for-existing-projects
-```bash
-docker run --rm \
--u "$(id -u):$(id -g)" \
--v $(pwd):/var/www/html \
--w /var/www/html \
-laravelsail/php81-composer:latest \
-composer install --ignore-platform-reqs
-```
+-   Each wind farm entry includes the farm's name and allows the user to click to view more details.
 
-## Your Notes
-Please see the below documentation containing my designs and potential features
-[Wind Turbine Project Specification](https://docs.google.com/document/d/1Mhub-JNZEZjQrw9eX0dnGmPFkL5lC-bckoMmPZRqgGE/edit?usp=sharing)
+-   When a wind farm is selected, it is highlighted to indicate the selection.
+
+### 2\. Turbine List:
+
+-   Upon selecting a wind farm, show a list of turbines associated with the farm.
+
+-   The wind farm's location is included on a map.
+
+-   Each turbine shows its name, last inspection, and components needing attention.
+
+-   The user can click on each turbine to view more detailed information of inspections carried out.
+
+### 3\. Turbine Information:
+
+-   For each turbine, display the following information:
+
+-   Components and their condition (Grade: 1(Great) - 5(Poor, needs replacing)).
+
+-   A list of recent inspections with notes and dates.
+
+* * * * *
+
+System Architecture & Design
+----------------------------
+
+### Frontend (React.js)
+
+-   React Pages/Components:
+
+-   Dashboard: The main component that holds the layout, sidebar, and content display.
+
+-   TurbineList: A component that displays a list of turbines with their statuses.
+
+-   TurbinePage: A separate page that shows detailed information about a single turbine.
+
+-   State Management:
+
+-   React Hooks (useState, useEffect) for managing state and lifecycle methods.
+
+-   useRef for managing the map instance in the Map component.
+
+-   CSS Framework:
+
+-   Tailwind CSS for styling (utility-first CSS framework).
+
+-   Components will be styled using Tailwind classes, ensuring a responsive design across different screen sizes.
+
+### Backend
+
+-   Endpoints:
+
+-   /api/windfarms: Get a list of wind farms.
+
+-   /api/windfarm/{id}/turbines: Get the turbines for a specific wind farm.
+
+-   /api/turbine/{id}: Get details about a specific turbine, including components and inspections.
+
+-   Error Handling: Return appropriate status codes (e.g., 404 for not found, 500 for server errors) and messages.
+
+### Map (Leaflet.js):
+
+-   Use Leaflet to display interactive maps with markers representing the wind farm's location.
+
+-   The map will dynamically update to center around the selected wind farm.
+
+### Libraries/Tools:
+
+-   React.js: For building the UI components and handling state.
+
+-   Axios: For making HTTP requests to the API.
+
+-   Leaflet.js: For embedding the interactive map.
+
+-   Tailwind CSS: For styling the application.
+
+-   React-Router: For routing between different pages or components.
+
+* * * * *
+
+Database
+--------
+
+### Tables:
+
+-   Wind Farms:
+
+Fields:
+
+-   id: Primary key for the wind farm.
+
+-   name: The name of the wind farm.
+
+-   latitude, longitude: Geographical coordinates of the wind farm.
+
+-   created_at, updated_at: Timestamps for record creation and updates.
+
+Relationship:
+
+-   A wind farm has many turbines (one-to-many relationship with the turbines table).
+
+-   Turbines:
+
+Fields:
+
+-   id: Primary key for the turbine.
+
+-   name: The name of the turbine.
+
+-   wind_farm_id: Foreign key linking the turbine to a specific wind farm. It uses constrained() to automatically reference the id of the wind_farms table.
+
+-   last_inspection: A timestamp to track the last inspection of the turbine.
+
+-   created_at, updated_at: Timestamps for record creation and updates.
+
+Relationship:
+
+-   A turbine belongs to a wind farm (wind_farm_id references wind_farms.id).
+
+-   A wind farm has many turbines.
+
+-   Components:
+
+Fields:
+
+-   id: Primary key for the component.
+
+-   name: The name of the component.
+
+-   turbine_id: Foreign key linking the component to a specific turbine. It uses constrained() to automatically reference the id of the turbines table.
+
+-   grade: The grade or condition of the component.
+
+-   created_at, updated_at: Timestamps for record creation and updates.
+
+Relationship:
+
+-   A component belongs to a turbine (turbine_id references turbines.id).
+
+-   A turbine has many components.
+
+-   Inspections:
+
+Fields:
+
+-   id: Primary key for the inspection record.
+
+-   turbine_id: Foreign key linking the inspection to a specific turbine. It uses constrained() to automatically reference the id of the turbines table.
+
+-   inspection_date: The date and time of the inspection.
+
+-   inspection_notes: Additional notes from the inspection.
+
+-   created_at, updated_at: Timestamps for record creation and updates.
+
+Relationship:
+
+-   An inspection belongs to a turbine (turbine_id references turbines.id).
+
+-   A turbine has many inspections.
+
+### Summary of Relationships:
+
+-   Wind Farms to Turbines: One-to-many (A wind farm has many turbines).
+
+-   Turbines to Components: One-to-many (A turbine has many components).
+
+-   Turbines to Inspections: One-to-many (A turbine has many inspections).
+
+* * * * *
+
+Design Considerations
+---------------------
+
+### UI/UX:
+
+-   Sidebar: A collapsible sidebar displaying a list of wind farms. Clicking on a wind farm updates the main content area.
+
+-   Main Display Area: Shows the selected wind farm's turbines in a list format, with key details. Clicking on a turbine displays more information.
+
+-   Interactive Map: Dynamically updates based on the selected farm's coordinates, with markers for each farm and popups showing basic details.
+
+-   Separate Turbine Inspection Page: Displays detailed turbine information, including component grades, inspection history, and status. Includes a back button to return to the turbine list.
+
+### Design Sketches:
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfXU8Lj8C8m143ha8j9VlMRVkCEwxHjjvY5tjYrmNGxvR6geZnJE-SR8G0JUWlS1j0YcMWXgtbzMxpDPO_Ag3q2SpDdxqsClU7kSdh1YGBMZsdSahisy2_QvtwrNEU1NfjSFVsSeA?key=4f5wFcX6IX30LBBTngnE5UHu)
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdFlQ0gudJibuRrix_QfejKySYaH_9jlZEOjSLaBCfvrm-uXBZpAUGZvcnoan_MtF18rfDbME_H6pvrmjBJfd3atW7nekoF0xeT6WBImGhYWdpnKn0xwhaAwXZHhWZ15vGSkByjwg?key=4f5wFcX6IX30LBBTngnE5UHu)
+
+### Challenges and Unaccomplished Features:
+
+-   ### Tests Implementation: I was unable to fully implement unit and integration tests for the project. Despite efforts, some tests did not work as expected, particularly in terms of mocking API calls and handling asynchronous operations.
+
+-   ### Back Navigation to Selected Wind Farm: The functionality to allow users to navigate back to the selected wind farm from the turbine inspection page was not fully implemented. While the basic navigation structure was in place, maintaining the selected farm state on back navigation was a challenge.
+
+-   ### API Authentication: I was not able to integrate full API authentication for secure access to endpoints. Although the API calls were functional, securing the communication between the frontend and the backend with proper authentication (e.g., JWT tokens) was not fully implemented within the scope of the project.
+
+-   3D Images of Turbine Parts: I attempted to implement interactive 3D models of turbine components but was unable to fully understand and integrate this feature. The complexity of rendering 3D models and making them interactive was a challenge. This feature would provide a more immersive experience, allowing users to view turbine parts from different angles for a detailed understanding.
+
+### Potential Features:
+
+-   Search and Filter Functionality: Implement a search bar and filter options to allow users to quickly find specific wind farms or turbines based on criteria like name, location, or operational status.
+
+-   Performance Analytics: Add charts or graphs to display performance metrics over time (e.g., energy production trends, maintenance history).
+
+-   User Roles and Permissions: Implement role-based access control, allowing different levels of users (e.g., admins, technicians) to view or manage data based on permissions, perhaps even functionality to add inspections
